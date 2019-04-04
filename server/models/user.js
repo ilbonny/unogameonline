@@ -1,9 +1,9 @@
 
-const User = {
-  Id : 0,
+let user = {
+  Id : '',
   ConnectionHubId: '',
   UserName: '',
   IsAutomatic: false
 };
 
-module.exports = { User }
+module.exports = { user }

@@ -393,6 +393,14 @@
     animation: bounce-in .5s reverse;
 }
 
+.marginBottom20{
+    margin-bottom: 20px;
+}
+
+.colorGreen{
+    color : green;
+}
+
 @keyframes bounce-in {
     0% {
         transform: scale(0);
