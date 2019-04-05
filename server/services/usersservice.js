@@ -1,7 +1,10 @@
+const utilsService = require('./utilsservice');
+
+const numPlayer = 4;
 let users = []
 
 const addUser = (user) =>{
-    user.id = generateQuickGuid();
+    user.id = utilsService.generateQuickGuid();
     users.push(user);
 }
 
@@ -9,9 +12,9 @@ const getUsers = () =>{
     return users;
 }
 
-function generateQuickGuid() {
-    return Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
+const getFourPlayers = ()=>{
+    if(users.length < numPlayer) return [];
+    return users.slice(0,numPlayer);
 }
 
-module.exports = {addUser, getUsers}
+module.exports = {addUser, getUsers, getFourPlayers}

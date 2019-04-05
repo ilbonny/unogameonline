@@ -22,14 +22,6 @@ export class Home extends Component {
   //  socket.off("change_data");
   //}
 
-  reloadUsers = () => {
-    const { socket } = this.props;
-    socket.on("RELOAD_USERS", players => {
-      this.setState({ players: players });
-      console.log(players);
-    });
-  };
-
   handleChangeValue = e => {
     let username = e.target.value;
     this.setState({ username: username });
@@ -61,10 +53,19 @@ export class Home extends Component {
       .then(e => {
         this.user = e.data;
         socket.emit("RELOADING_USERS");
+        socket.emit("START_GAME");
       })
       .catch(e => {
         console.log(e);
       });
+  };
+
+  reloadUsers = () => {
+    const { socket } = this.props;
+    socket.on("RELOAD_USERS", players => {
+      this.setState({ players: players });
+      console.log(players);
+    });
   };
 
   render() {
