@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import "../resources/main.css";
 import axios from "axios";
-import { routes } from '../config/serverRoutes'
-import socketIo from "socket.io-client";
-
-const socket = socketIo('http://localhost:5000');
+import { routes } from "../config/serverRoutes";
 
 export class Home extends Component {
   state = {
@@ -16,17 +13,22 @@ export class Home extends Component {
     show: true
   };
 
-  componentDidMount =()=>{   
-    socket.on("RELOAD_USERS", (players)=>{
-        this.setState({ players: players });
-        console.log(players);
-    })
-  }
+  componentDidMount = () => {
+    this.reloadUsers();
+  };
 
   //componentWillUnmount() {
   //  socket.off("get_data");
   //  socket.off("change_data");
   //}
+
+  reloadUsers = () => {
+    const { socket } = this.props;
+    socket.on("RELOAD_USERS", players => {
+      this.setState({ players: players });
+      console.log(players);
+    });
+  };
 
   handleChangeValue = e => {
     let username = e.target.value;
@@ -36,7 +38,7 @@ export class Home extends Component {
   addPlayer = () => {
     var user = {
       username: this.state.username,
-      connectionHubId: socket.id,
+      connectionHubId: this.props.socket.id,
       isAutomatic: false
     };
     this.callAddUser(user);
@@ -44,7 +46,8 @@ export class Home extends Component {
 
   addAutomaticPlayer = () => {
     var user = {
-      username: "P_" + Math.random().toString(36).substr(2, 9),
+      username:
+        "P_" + Math.random().toString(36).substr(2, 9),
       connectionHubId: "",
       isAutomatic: true
     };
@@ -52,12 +55,12 @@ export class Home extends Component {
   };
 
   callAddUser = user => {
+    const { socket } = this.props;
     axios
       .post(routes().users + "/add", user)
       .then(e => {
         this.user = e.data;
-        socket.emit("RELOAD_USERS");
-        //this.playerHub.server.startGame();
+        socket.emit("RELOADING_USERS");
       })
       .catch(e => {
         console.log(e);
@@ -65,7 +68,22 @@ export class Home extends Component {
   };
 
   render() {
-    const { username } = this.state;
+    const { username, players } = this.state;
+    const listPlayers = players ? (
+      players.map((player, index) => {
+        return (
+          <tr key={index}>
+            <td>{player.username}</td>
+          </tr>
+        );
+      })
+    ) : (
+      <tr>
+        <td>
+          <h3>Waiting for players...</h3>
+        </td>
+      </tr>
+    );
 
     return (
       <div className="container">
@@ -97,9 +115,6 @@ export class Home extends Component {
             Add Automatic Player
           </button>
         </div>
-        <div className="row marginBottom20 colorGreen">
-          <h3>Waiting for players...</h3>
-        </div>
         <div className="row marginBottom20">
           <table className="table">
             <thead>
@@ -107,11 +122,7 @@ export class Home extends Component {
                 <th scope="col">Player</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td />
-              </tr>
-            </tbody>
+            <tbody>{listPlayers}</tbody>
           </table>
         </div>
       </div>

@@ -7,11 +7,10 @@ const bodyParser = require("body-parser");
 const socketManager = require('./socketManager');
 
 const port = process.env.PORT || 5000;
-const app = express()
-const server = http.createServer(app)
+const app = express();
+const server = http.createServer(app);
 const io = socketIo(server);
-
-io.on('connection', socketManager)
+socketManager.connect(io);
 
 app.set('port', port)
 app.use(bodyParser.json());
@@ -26,4 +25,4 @@ server.listen(app.get('port'), () => {
 
 io.on("disconnect", () => console.log("Client disconnected"));
 
-module.exports = app;
+module.exports = {app};
