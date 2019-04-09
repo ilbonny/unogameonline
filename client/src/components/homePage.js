@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "../resources/main.css";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
 import { routes } from "../config/serverRoutes";
 
 export class Home extends Component {
@@ -15,12 +16,8 @@ export class Home extends Component {
 
   componentDidMount = () => {
     this.reloadUsers();
+    this.createGame();
   };
-
-  //componentWillUnmount() {
-  //  socket.off("get_data");
-  //  socket.off("change_data");
-  //}
 
   handleChangeValue = e => {
     let username = e.target.value;
@@ -51,9 +48,9 @@ export class Home extends Component {
     axios
       .post(routes().users + "/add", user)
       .then(e => {
-        this.user = e.data;
+        this.setState({ user: e.data });
         socket.emit("RELOADING_USERS");
-        socket.emit("START_GAME");
+        socket.emit("CREATING_GAME");
       })
       .catch(e => {
         console.log(e);
@@ -64,9 +61,15 @@ export class Home extends Component {
     const { socket } = this.props;
     socket.on("RELOAD_USERS", players => {
       this.setState({ players: players });
-      console.log(players);
     });
   };
+
+  createGame = ()=>{
+    const { socket } = this.props;
+    socket.on("CREATE_GAME", gameId => {
+      this.props.history.push({pathname:'/game', search:'?game=' + gameId + "&player=" + this.state.user.id});
+    });
+  }
 
   render() {
     const { username, players } = this.state;
@@ -131,4 +134,4 @@ export class Home extends Component {
   }
 }
 
-export default Home;
+export default withRouter(Home);

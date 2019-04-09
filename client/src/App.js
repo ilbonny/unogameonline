@@ -1,13 +1,14 @@
 import React, { Component } from "react";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Home from "./components/homePage";
+import Game from "./components/gamePage";
 import io from "socket.io-client";
 
 const socketUrl = "http://localhost:5000"
 
 class App extends Component {
-
   state = {
-    socket : null  
+    socket : null
   };
 
   componentWillMount() {
@@ -22,14 +23,20 @@ class App extends Component {
 		})
 		
 		this.setState({socket})
-	}
-
+  }
+  
   render() {
-    const { socket } = this.state
+    const { socket } = this.state;
+
     return (
-      <div className="App">
-          <Home socket={socket} />
-      </div>      
+      <BrowserRouter>
+        <div className="App">
+          <Switch>
+            <Route exact path="/" render={() => <Home socket={socket} />} />
+            <Route path="/game" render={() => <Game socket={socket} />} />
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }

@@ -3,17 +3,20 @@ const enumGame = require('../models/enum');
 create = ()=>{
     let cards = [];
 
-    enumGame.CardColor.forEach(color => {
-        enumGame.CardValue.forEach(val =>{
-            if(val !== enumGame.CardValue.Cover) {
-                let card = {
-                    color : color,
-                    value : val,
-                    score : val
-                }
-                cards.push(card)
-            }            
-        })
+    let cardcolors = Object.keys(enumGame.CardColor);
+    let cardvalues = Object.keys(enumGame.CardValue);
+
+    cardcolors.forEach(color => {
+         cardvalues.forEach(val =>{
+             if(val !== "Cover") {
+                 let card = {
+                     color : color,
+                     value : val,
+                     score : enumGame.CardValue[val]
+                 }
+                 cards.push(card)
+             }            
+         })
     });
 
     return cards.sort((a,b)=>{
@@ -23,4 +26,8 @@ create = ()=>{
     }) 
 }
 
-module.exports = {create}
+shuffle = (array) =>{
+    array.sort(() => Math.random() - 0.5);
+}
+
+module.exports = {create,shuffle}

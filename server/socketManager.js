@@ -11,11 +11,17 @@ const connect = (io) =>{
             io.emit("RELOAD_USERS", users);
         })
 
-        socket.on("START_GAME", ()=>{
+        socket.on("CREATING_GAME", ()=>{
             const users = usersService.getFourPlayers();
             if(users.length === 0) return;
 
-            const game = gameService.start(users)
+            const game = gameService.create(users);
+            io.emit("CREATE_GAME", game);
+        })
+
+        socket.on("STARTING_GAME", (params)=>{
+            const game = gameService.start(params.gameId,params.userId);
+            socket.emit("START_GAME", game);
         })
     });
 }
