@@ -2,6 +2,7 @@ const _ = require('lodash');
 const utilsService = require('./utilsservice');
 const playerService = require('./playerservice');
 const cardDeskService = require('./carddeskservice');
+const ruleService = require('./ruleservice');
 const enumGame = require('../models/enum');
 
 const numCard = 7;
@@ -50,7 +51,7 @@ start = (gameId, userId) =>{
     let playersOrder = _.sortBy(game.players, (o) => {return o.position });
     let index = playersOrder.indexOf(player);
 
-    for (let i = 0; i < playersOrder.length; i++) {
+    for (let i = 1; i < playersOrder.length; i++) {
         let indexCurr = i + index;
 
         if(i + index >= playersOrder.length)
@@ -62,6 +63,13 @@ start = (gameId, userId) =>{
 
     return gameForUser;
 }
+
+playerTurnExecute = turn => {
+    let game = _.find(games, (x)=>{return x.id == turn.gameId});
+    if (game == null) return;
+  
+    ruleService.apply(turn, game);
+  };  
 
 addPlayerWithCoverCards = (playerIndex)=>{
     let player = {
@@ -113,5 +121,5 @@ addFirstDiscardPile = (game) =>{
     };
 }
 
-module.exports = {create, start}
+module.exports = {create, start, playerTurnExecute}
 
