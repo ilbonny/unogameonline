@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../resources/main.css";
 import "../resources/cards.css";
-import { isRegExp } from "util";
+const _ = require('lodash');
 
 export class GameDiscardPile extends Component {
   createDiscardPile = () => {
@@ -20,26 +20,31 @@ export class GameDiscardPile extends Component {
   };
 
   setMiddleCard = (card, index) => {
+    const game = this.props.game;
     if (index === 0) return;
 
-    var deg = ((index * 10 + index) * 10) % 360;
-    var animation = "";
-    switch (card.playerDiscard) {
-      case this.player1.Position:
+    let player = _.find(game.players, (player) =>{ return player.position === card.playerDiscard});
+    let indPlayer = game.players.indexOf(player);
+
+    let deg = ((index * 10 + index) * 10) % 360;
+    let animation = "";
+    
+    switch (indPlayer) {
+      case 0:
         animation = "bottomToCenter";
         break;
-      case this.player2.Position:
+      case 1:
         animation = "rightToCenter";
         break;
-      case this.player3.Position:
+      case 2:
         animation = "topToCenter";
         break;
-      case this.player4.Position:
+      case 3:
         animation = "leftToCenter";
         break;
     }
     return {
-      transform: `rotate(${deg}"deg")`,
+      transform: `rotate(${deg}deg)`,
       animationName: animation,
       animationDuration: "0.7s"
     };

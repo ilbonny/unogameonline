@@ -6,6 +6,11 @@ const connect = (io) =>{
     io.sockets.on('connection', function(socket) {
         console.log("New client connected " + socket.id);
 
+        socket.on("disconnect", (reason)=>{
+            console.log('Disconnect! '+ socket.id + reason);
+            io.emit("DISCONNECT", socket.id);
+        })
+
         socket.on("RELOADING_USERS", ()=>{
             const users = usersService.getUsers();
             io.emit("RELOAD_USERS", users);
@@ -23,7 +28,13 @@ const connect = (io) =>{
             const game = gameService.start(params.gameId,params.userId);
             socket.emit("START_GAME", game);
         })
+
+        socket.on("PLAYTURNING", (turn)=>{
+            gameService.playerTurnExecute(turn);
+            io.emit("PLAYTURN");
+        })
     });
+
 }
 
 module.exports = {connect}

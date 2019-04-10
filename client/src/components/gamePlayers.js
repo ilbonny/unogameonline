@@ -20,21 +20,16 @@ export class GamePlayers extends Component {
   };
 
   playerTurnExecute = (playerNum, card, isChallenge) => {
-    const { gameId, userId} = this.props;
-    axios
-      .post(routes().game +"/playerturn", {
-        card: card,
-        num: playerNum,
-        gameId: gameId,
-        userId: userId,
-        isChallenge
-      })
-      .then(e => {
-        //this.gameHub.server.reloadGame(this.gameId);
-      })
-      .catch(e => {
-        console.log(e);
-      });
+
+    const { gameId, userId, socket} = this.props;
+
+    socket.emit("PLAYTURNING", {
+      card: card,
+      num: playerNum,
+      gameId: gameId,
+      userId: userId,
+      isChallenge
+    });
   };
 
   createPlayerCard = () => {

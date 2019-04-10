@@ -27,7 +27,6 @@ export class Home extends Component {
   addPlayer = () => {
     var user = {
       username: this.state.username,
-      connectionHubId: this.props.socket.id,
       isAutomatic: false
     };
     this.callAddUser(user);
@@ -35,9 +34,7 @@ export class Home extends Component {
 
   addAutomaticPlayer = () => {
     var user = {
-      username:
-        "P_" + Math.random().toString(36).substr(2, 9),
-      connectionHubId: "",
+      username: "P_" + Math.random().toString(36).substr(2, 9),
       isAutomatic: true
     };
     this.callAddUser(user);
