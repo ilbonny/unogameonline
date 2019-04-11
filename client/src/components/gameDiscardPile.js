@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../resources/main.css";
 import "../resources/cards.css";
-const _ = require('lodash');
+const _ = require("lodash");
 
 export class GameDiscardPile extends Component {
   createDiscardPile = () => {
@@ -11,8 +11,8 @@ export class GameDiscardPile extends Component {
       return (
         <div className="cardDivContainerMiddle" key={index}>
           <div
-            className={'cardHorizontal ' + card.value + '_' + card.color}
-            style={this.setMiddleCard(card, index)}            
+            className={"cardHorizontal " + card.value + "_" + card.color}
+            style={this.setMiddleCard(card, index)}
           />
         </div>
       );
@@ -23,12 +23,14 @@ export class GameDiscardPile extends Component {
     const game = this.props.game;
     if (index === 0) return;
 
-    let player = _.find(game.players, (player) =>{ return player.position === card.playerDiscard});
+    let player = _.find(game.players, player => {
+      return player.position === card.playerDiscard;
+    });
     let indPlayer = game.players.indexOf(player);
 
     let deg = ((index * 10 + index) * 10) % 360;
     let animation = "";
-    
+
     switch (indPlayer) {
       case 0:
         animation = "bottomToCenter";
@@ -41,6 +43,8 @@ export class GameDiscardPile extends Component {
         break;
       case 3:
         animation = "leftToCenter";
+        break;
+      default:
         break;
     }
     return {

@@ -33,6 +33,12 @@ const connect = (io) =>{
             gameService.playerTurnExecute(turn);
             io.emit("PLAYTURN");
         })
+
+        socket.on("DRAWING_DECK", (turn)=>{
+            gameService.drawDeck(turn);
+            io.emit("PLAYTURN");
+        })
+        
     });
 
 }

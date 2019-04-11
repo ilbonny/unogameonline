@@ -73,11 +73,11 @@ export class Game extends Component {
     const {game, userId, gameId} = this.state;
     return (
       <div>
-        <GameDeck />
+        <GameDeck socket={socket} gameId={gameId}/>
         <GameCube />
         <GameUnoButton />
         <GameMessages game={game} />
-        <GameDisputeButtons />
+        {/* <GameDisputeButtons /> */}
         <div id="leftdiv">
           <GamePlayers
             socket = {socket}

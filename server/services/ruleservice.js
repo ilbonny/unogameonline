@@ -1,51 +1,142 @@
-const _ = require('lodash');
+const _ = require("lodash");
+const enumGame = require("../models/enum");
+const messageService = require("./messagesevice");
 
 apply = (turn, game) => {
-    normalMatch(turn,game);
-};
-
-normalMatch = (turn, game) => {
-  if ( (turn.card.color != game.currentTurn.card.color && turn.card.value == game.currentTurn.card.value) 
-        ||turn.card.color == game.currentTurn.card.color) {
-
-    removeToHandAndAddDiscard(turn, game);
-    setCurrentPlayer(game, 1);
-
-    // game.Message = MessageService.Show(
-    //   MessageService.PlayPlayer,
-    //   game.CurrentPlayer.User.UserName
-    // );
+  switch (turn.card.score) {
+    case enumGame.CardValue.Reverse:
+      reverseMatch(turn, game);
+      break;
+    case enumGame.CardValue.Skip:
+      skipMatch(turn, game);
+      break;
+    case enumGame.CardValue.DrawTwo:
+      drawTwoMatch(turn, game);
+      break;
+    case enumGame.CardValue.DrawFour:
+      break;
+    case enumGame.CardValue.Wild:
+      wildMatch(turn, game);
+      break;
+    default:
+      normalMatch(turn, game);
+      break;
   }
 };
 
-removeToHandAndAddDiscard = (turn, game) =>
-{
-     _.remove(game.currentPlayer.hand, (x)=>{
-        return x.value == turn.card.value && x.score == turn.card.score && x.color == turn.card.color
-     });
+reverseMatch = (turn, game) => {
+  if (turn.card.score != enumGame.CardValue.Reverse) return;
 
-    turn.card.playerDiscard = game.currentPlayer.position;
+  if (
+    game.currentTurn.card.value == enumGame.CardValue.Reverse ||
+    turn.card.color == game.currentTurn.card.color
+  ) {
+    removeToHandAndAddDiscard(turn, game);
 
-    game.discardPile.push(turn.card);
-    game.currentTurn.card = turn.card;
+    game.players = _.reverse(game.players);
+    game.isReverse = !game.isReverse;
 
-    if (game.currentPlayer.hand.Count == 1)
-        game.isFadeUno = true;
+    setCurrentPlayer(game, 1);
+    game.message =`${messageService.messages.reverse} ${game.currentPlayer.user.username}`;
+  }
+};
 
-    if (game.currentPlayer.hand.Count == 0)
-        game.playerWin = game.currentPlayer;
-}
+skipMatch = (turn, game) => {
+  if (turn.card.score != enumGame.CardValue.Skip) return;
 
-setCurrentPlayer = (game, next) =>
-{
-    var currentIndex = game.players.indexOf(game.currentPlayer);
-    var move = currentIndex + next;
-    var count = game.players.length - 1;
+  if (
+    game.currentTurn.card.value == enumGame.CardValue.Skip ||
+    turn.card.color == game.currentTurn.card.color
+  ) {
+    removeToHandAndAddDiscard(turn, game);
+    setCurrentPlayer(game, 2);
 
-    var indexPlayer = move > count ? move-count-1 : move;
+    game.message =`${messageService.messages.skipTurn} ${game.currentPlayer.user.username}`;
+  }
+};
 
-    game.currentPlayer = game.players[indexPlayer];
-}
+drawTwoMatch = (turn, game) => {
+  if (turn.card.score != enumGame.CardValue.DrawTwo) return;
 
+  if (
+    game.currentTurn.card.value == enumGame.CardValue.DrawTwo ||
+    turn.card.color == game.currentTurn.card.color
+  ) {
+    addCardToNextPlayer(game, 2);
+    removeToHandAndAddDiscard(turn, game);
+    setCurrentPlayer(game, 2);
 
-module.exports = { apply };
+    game.message =`${messageService.messages.drawTwo} ${game.currentPlayer.user.username}`;
+  }
+};
+
+wildMatch = (turn, game) => {
+  if (turn.card.score != cardValue.wild) return;
+
+  removeToHandAndAddDiscard(turn, game, PredicateFindCardValue(turn));
+  setCurrentPlayer(game, 1);
+
+  game.message =`${messageService.messages.wild} ${turn.card.color} play ${game.currentPlayer.user.username}`;
+};
+
+normalMatch = (turn, game) => {
+  if (
+    (turn.card.color != game.currentTurn.card.color &&
+      turn.card.value == game.currentTurn.card.value) ||
+    turn.card.color == game.currentTurn.card.color
+  ) {
+    removeToHandAndAddDiscard(turn, game);
+    setCurrentPlayer(game, 1);
+
+    game.message =`${messageService.messages.playPlayer} ${game.currentPlayer.user.username}`;
+  }
+};
+
+removeToHandAndAddDiscard = (turn, game) => {
+  _.remove(game.currentPlayer.hand, x => {
+    return (
+      x.value == turn.card.value &&
+      x.score == turn.card.score &&
+      x.color == turn.card.color
+    );
+  });
+
+  turn.card.playerDiscard = game.currentPlayer.position;
+
+  game.discardPile.push(turn.card);
+  game.currentTurn.card = turn.card;
+
+  if (game.currentPlayer.hand.length == 1) game.isFadeUno = true;
+
+  if (game.currentPlayer.hand.length == 0) game.playerWin = game.currentPlayer;
+};
+
+setCurrentPlayer = (game, next) => {
+  var currentIndex = game.players.indexOf(game.currentPlayer);
+  var move = currentIndex + next;
+  var count = game.players.length - 1;
+
+  var indexPlayer = move > count ? move - count - 1 : move;
+
+  game.currentPlayer = game.players[indexPlayer];
+};
+
+addCardToNextPlayer = (game, numCard) => {
+  var currentIndex = game.players.indexOf(game.currentPlayer);
+  var indexPlayer =
+    currentIndex + 1 > game.players.length - 1 ? 0 : currentIndex + 1;
+  addCardsToPlayer(game, numCard, indexPlayer);
+};
+
+addCardsToPlayer = (game, numCard, indexPlayer) => {
+  var player = game.players[indexPlayer];
+  var cards = _.take(game.drawPile, numCard);
+
+  cards.forEach(card => {
+    player.hand.push(card);
+  });
+
+  game.drawPile.splice(0, numCard);
+};
+
+module.exports = { apply,setCurrentPlayer };

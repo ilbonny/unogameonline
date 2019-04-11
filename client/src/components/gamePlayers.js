@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { routes } from "../config/serverRoutes";
-import axios from "axios";
 import "../resources/main.css";
 import "../resources/cards.css";
 

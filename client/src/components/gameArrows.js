@@ -6,7 +6,7 @@ export class GameArrows extends Component {
     const { game } = this.props;
     let card = game.discardPile[game.discardPile.length - 1];
     const arrowurl = game.isReverse
-      ? `../resources/time_arrows_reverse_${card.color}.png`
+      ? `../resources/time_reverse_arrows_${card.color}.png`
       : `../resources/time_arrows_${card.color}.png`;
     const arrowRotation = game.isReverse ? "rightRotation" : "leftRotation";
     return (
