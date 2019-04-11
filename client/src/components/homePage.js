@@ -102,20 +102,14 @@ export class Home extends Component {
                 onChange={this.handleChangeValue}
               />
             </div>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              onClick={this.addPlayer}
-            >
+            <button type="submit" className="btn btn-primary" onClick={this.addPlayer}>
               Submit
+            </button>            
+            <button type="submit" className="btn btn-info">
+               Add Automatic Player
             </button>
           </div>
-        </div>
-        <div className="row marginBottom20">
-          <button type="submit" className="btn btn-info">
-            Add Automatic Player
-          </button>
-        </div>
+        </div>        
         <div className="row marginBottom20">
           <table className="table">
             <thead>

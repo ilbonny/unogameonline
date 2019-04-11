@@ -12,7 +12,7 @@ export class GameDeck extends Component {
   render() {
     return (
       <div id="deckdiv">
-        <img src="../resources/deck.jpg" alt="deck" onClick={this.drawDeck} />
+        <img src={require('../resources/deck.jpg')} alt="deck" onClick={this.drawDeck} />
       </div>
     );
   }

@@ -9,20 +9,20 @@ export class GameUser extends Component {
       <div>
         <div
           id="playerBottom" style={this.setBgStylePlayer(players[0].position)}        >
-          <img src="../resources/Player.png" height="150" alt="userimg" />
+          <img src={require('../resources/player.png')} height="150" alt="userimg" />
           <div className="playerName">{players[0].user.username}</div>
         </div>
         <div
           id="playerRight" style={this.setBgStylePlayer(players[1].position)}>
-          <img src="../resources/Player.png" height="150" alt="userimg" />
+          <img src={require('../resources/player.png')} height="150" alt="userimg" />
           <div className="playerName">{players[1].user.username}</div>
         </div>
         <div id="playerTop" style={this.setBgStylePlayer(players[2].position)}>
-          <img src="../resources/Player.png" height="150" alt="userimg" />
+          <img src={require('../resources/player.png')} height="150" alt="userimg" />
           <div className="playerName">{players[2].user.username}</div>
         </div>
         <div id="playerLeft" style={this.setBgStylePlayer(players[3].position)}>
-          <img src="../resources/Player.png" height="150" alt="userimg" />
+          <img src={require('../resources/player.png')}  height="150" alt="userimg" />
           <div className="playerName">{players[3].user.username}</div>
         </div>
       </div>

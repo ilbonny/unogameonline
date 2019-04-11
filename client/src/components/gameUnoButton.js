@@ -8,7 +8,7 @@ export class GameUnoButton extends Component {
     return (
       <div id="unobuttondiv">
         <img
-          src="../resources/buttonUno.png"
+          src={require('../resources/buttonUno.png')}
           alt="buttonUno"
           onClick={this.declareUno()}
         />

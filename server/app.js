@@ -25,7 +25,6 @@ app.get("/", function(req, res) {
  res.sendFile(path.join(__dirname, "../client/build/index.html"));  
 });
 
-
 server.listen(app.get('port'), () => {
       fs.readdirSync(path.join(__dirname, "routes")).map(file => {
       require("./routes/" + file)(app);

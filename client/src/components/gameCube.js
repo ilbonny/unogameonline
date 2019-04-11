@@ -11,22 +11,22 @@ selectColor  = (color)=>{
     return (
       <div id="cubediv">
         <img
-          src="../resources/cubeblue.png"
+          src={require('../resources/cubeblue.png')}
           alt="cubeblue"
           onClick={this.selectColor("blue")}
         />
         <img
-          src="../resources/cubegreen.png"
+          src={require('../resources/cubegreen.png')}
           alt="cubegreen"
           onClick={this.selectColor("green")}
         />
         <img
-          src="../resources/cubered.png"
+          src={require('../resources/cubered.png')}
           alt="cubered"
           onClick={this.selectColor("red")}
         />
         <img
-          src="../resources/cubeyellow.png"
+          src={require('../resources/cubeyellow.png')}
           alt="cubeyellow"
           onClick={this.selectColor("yellow")}
         />
