@@ -4,8 +4,6 @@ import Home from "./components/homePage";
 import Game from "./components/gamePage";
 import io from "socket.io-client";
 
-const socketUrl = "http://localhost:5000"
-
 class App extends Component {
   state = {
     socket : null
@@ -16,7 +14,7 @@ class App extends Component {
   }
   
   initSocket = ()=>{
-		const socket = io(socketUrl)
+		const socket = io()
 
 		socket.on('connect', ()=>{
 			console.log("Connected");
