@@ -16,6 +16,16 @@ app.set('port', port)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/static*", function(req, res) {
+  const filePath = path.join(__dirname, `../client/build/static/${req.params[0]}`);
+  res.sendFile(filePath);  
+});
+
+app.get("/", function(req, res) {
+ res.sendFile(path.join(__dirname, "../client/build/index.html"));  
+});
+
+
 server.listen(app.get('port'), () => {
       fs.readdirSync(path.join(__dirname, "routes")).map(file => {
       require("./routes/" + file)(app);
