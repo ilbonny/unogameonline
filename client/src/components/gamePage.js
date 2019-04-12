@@ -23,9 +23,6 @@ export class Game extends Component {
     currentCard: {},
     playerNum: 0,
     showDisputeButtons: false,
-    arrowurl: "",
-    arrowRotation: "",
-    gameHub: {}
   };
 
   componentDidMount = () => {
@@ -68,65 +65,90 @@ export class Game extends Component {
     });
   }
 
+  handleShowColorCube = (value, card, playerNum)=>{
+    this.setState({showColorCube : value, currentCard : card, playerNum : playerNum});
+  }
+
+  selectColor = (color) => {
+      const {game, currentCard} = this.state;
+      this.setState({showColorCube : false});
+
+      currentCard.color = color;
+      if (currentCard.value === "DrawFour") {
+        game.message = "Do you want to challenge ?";
+        this.setState({game : game});
+        //this.showDisputeButtons = true;
+    } else
+        this.playerTurnExecute(this.playerNum, currentCard, false);
+  }
+
+  playerTurnExecute = (playerNum, card, isChallenge) => {
+    const { socket} = this.props;
+    const {gameId, userId } = this.state;
+
+    socket.emit("PLAYTURNING", {
+      card: card,
+      num: playerNum,
+      gameId: gameId,
+      userId: userId,
+      isChallenge
+    });
+  };
+
   render() {
     const { socket } = this.props;
-    const {game, userId, gameId} = this.state;
+    const {game, userId, gameId, showColorCube} = this.state;
     return (
       <div>
         <GameDeck socket={socket} gameId={gameId}/>
-        <GameCube />
+        <GameCube showColorCube={showColorCube} selectColor={this.selectColor} />
         <GameUnoButton />
         <GameMessages game={game} />
         {/* <GameDisputeButtons /> */}
         <div id="leftdiv">
           <GamePlayers
-            socket = {socket}
             game={game}
             position="3"
             container="cardDivContainerVertical"
             cardStyle="cardVerticalLeft"
-            transform="left"
-            userId = {userId}
-            gameId = {gameId} 
+            transform="left"            
+            handleShowColorCube = {this.handleShowColorCube}
+            playerTurnExecute = {this.playerTurnExecute}
           />
         </div>
         <div id="topdiv">
           <GamePlayers
-          socket = {socket}
             game={game}
             position="2"
             container="cardDivContainerHorizontal"
             cardStyle="cardHorizontal"
             transform="top"
-            userId = {userId}
-            gameId = {gameId} 
+            handleShowColorCube = {this.handleShowColorCube}
+            playerTurnExecute = {this.playerTurnExecute}
           />
         </div>
         <GameArrows game={game} />
         <GameDiscardPile game={game} />
         <div id="rightdiv">
           <GamePlayers
-          socket = {socket}
             game={game}
             position="1"
             container="cardDivContainerVertical"
             cardStyle="cardVerticalRight"
             transform="right"
-            userId = {userId}
-            gameId = {gameId} 
-            
+            handleShowColorCube = {this.handleShowColorCube}            
+            playerTurnExecute = {this.playerTurnExecute}
           />
         </div>
         <div id="bottomdiv">
           <GamePlayers
-          socket = {socket}
             game={game}
             position="0"
             container="cardDivContainerHorizontal"
             cardStyle="cardHorizontal"
             transform="bottom"
-            userId = {userId}
-            gameId = {gameId} 
+            handleShowColorCube = {this.handleShowColorCube}
+            playerTurnExecute = {this.playerTurnExecute}
           />
         </div>
         <GameUser game={game} />

@@ -7,27 +7,20 @@ export class GamePlayers extends Component {
     const { game } = this.props;
     if (game.currentPlayer.position !== playerNum) return;
    
-    if (card.Value === "Wild" || card.Value === "DrawFour") {
-      // this.showColorCube = true;
-      //   // this.playerNum = playerNum;
-      //   // this.currentCard = card;
-      //   return;
+    if (card.value === "Wild" || card.value === "DrawFour") {
+      var newCard = {
+        color : '',
+        value : card.value,
+        score : card.score        
+      }
+      this.props.handleShowColorCube(true, newCard, playerNum);
+      return;
     }
 
-    this.playerTurnExecute(playerNum, card, false);
-  };
-
-  playerTurnExecute = (playerNum, card, isChallenge) => {
-
-    const { gameId, userId, socket} = this.props;
-
-    socket.emit("PLAYTURNING", {
-      card: card,
-      num: playerNum,
-      gameId: gameId,
-      userId: userId,
-      isChallenge
-    });
+    if(game.currentTurn.card.color === card.color 
+        || (game.currentTurn.card.color !== card.color && game.currentTurn.card.value === card.value)){
+          this.props.playerTurnExecute(playerNum, card, false);
+        }        
   };
 
   createPlayerCard = () => {

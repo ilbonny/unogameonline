@@ -136,10 +136,12 @@ initialCarsToPlayer = game => {
 addFirstDiscardPile = game => {
   let find = _.find(game.drawPile, x => {
     return (
-      x.value != enumGame.CardValue.Reverse &&
-      x.value != enumGame.CardValue.DrawFour &&
-      x.value != enumGame.CardValue.DrawTwo &&
-      x.value != enumGame.CardValue.Wild
+      x.score != enumGame.CardValue.Reverse &&
+      x.score != enumGame.CardValue.Skip &&
+      x.score != enumGame.CardValue.DrawTwo &&
+      x.score != enumGame.CardValue.Wild &&
+      x.score != enumGame.CardValue.DrawFour &&
+      x.score != enumGame.CardValue.Cover
     );
   });
 

@@ -31,6 +31,8 @@ reverseMatch = (turn, game) => {
     game.currentTurn.card.value == enumGame.CardValue.Reverse ||
     turn.card.color == game.currentTurn.card.color
   ) {
+
+    removeCardValueAndColor(turn, game);
     removeToHandAndAddDiscard(turn, game);
 
     game.players = _.reverse(game.players);
@@ -48,6 +50,7 @@ skipMatch = (turn, game) => {
     game.currentTurn.card.value == enumGame.CardValue.Skip ||
     turn.card.color == game.currentTurn.card.color
   ) {
+    removeCardValueAndColor(turn, game);
     removeToHandAndAddDiscard(turn, game);
     setCurrentPlayer(game, 2);
 
@@ -62,7 +65,9 @@ drawTwoMatch = (turn, game) => {
     game.currentTurn.card.value == enumGame.CardValue.DrawTwo ||
     turn.card.color == game.currentTurn.card.color
   ) {
+
     addCardToNextPlayer(game, 2);
+    removeCardValueAndColor(turn, game);
     removeToHandAndAddDiscard(turn, game);
     setCurrentPlayer(game, 2);
 
@@ -71,9 +76,10 @@ drawTwoMatch = (turn, game) => {
 };
 
 wildMatch = (turn, game) => {
-  if (turn.card.score != cardValue.wild) return;
+  if (turn.card.score != enumGame.CardValue.Wild) return;
 
-  removeToHandAndAddDiscard(turn, game, PredicateFindCardValue(turn));
+  removeCardValue(turn, game);
+  removeToHandAndAddDiscard(turn, game);
   setCurrentPlayer(game, 1);
 
   game.message =`${messageService.messages.wild} ${turn.card.color} play ${game.currentPlayer.user.username}`;
@@ -85,6 +91,7 @@ normalMatch = (turn, game) => {
       turn.card.value == game.currentTurn.card.value) ||
     turn.card.color == game.currentTurn.card.color
   ) {
+    removeCardValueAndColor(turn, game);
     removeToHandAndAddDiscard(turn, game);
     setCurrentPlayer(game, 1);
 
@@ -93,14 +100,6 @@ normalMatch = (turn, game) => {
 };
 
 removeToHandAndAddDiscard = (turn, game) => {
-  _.remove(game.currentPlayer.hand, x => {
-    return (
-      x.value == turn.card.value &&
-      x.score == turn.card.score &&
-      x.color == turn.card.color
-    );
-  });
-
   turn.card.playerDiscard = game.currentPlayer.position;
 
   game.discardPile.push(turn.card);
@@ -138,5 +137,23 @@ addCardsToPlayer = (game, numCard, indexPlayer) => {
 
   game.drawPile.splice(0, numCard);
 };
+
+removeCardValue = (turn, game)=>{
+  _.remove(game.currentPlayer.hand, x => {
+    return (
+      x.value == turn.card.value
+    );
+  });
+}
+
+removeCardValueAndColor = (turn, game)=>{
+  _.remove(game.currentPlayer.hand, x => {
+    return (
+      x.value == turn.card.value &&
+      x.score == turn.card.score &&
+      x.color == turn.card.color
+    );
+  });
+}
 
 module.exports = { apply,setCurrentPlayer };

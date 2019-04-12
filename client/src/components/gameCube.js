@@ -2,35 +2,41 @@ import React, { Component } from "react";
 import "../resources/main.css";
 
 export class GameCube extends Component {
-
-selectColor  = (color)=>{
-
-}
+  selectColor = (e) => {
+    this.props.selectColor(e.target.id);
+  };
 
   render() {
-    return (
+    const { showColorCube } = this.props;
+    return showColorCube ? (
       <div id="cubediv">
         <img
-          src={require('../resources/cubeblue.png')}
+          src={require("../resources/cubeblue.png")}
           alt="cubeblue"
-          onClick={this.selectColor("blue")}
+          onClick={this.selectColor}
+          id='Blue'
         />
         <img
-          src={require('../resources/cubegreen.png')}
+          src={require("../resources/cubegreen.png")}
           alt="cubegreen"
-          onClick={this.selectColor("green")}
+          onClick={this.selectColor}
+          id='Green'
         />
         <img
-          src={require('../resources/cubered.png')}
+          src={require("../resources/cubered.png")}
           alt="cubered"
-          onClick={this.selectColor("red")}
+          onClick={this.selectColor}
+          id='Red'
         />
         <img
-          src={require('../resources/cubeyellow.png')}
+          src={require("../resources/cubeyellow.png")}
           alt="cubeyellow"
-          onClick={this.selectColor("yellow")}
+          onClick={this.selectColor}
+          id='Yellow'
         />
       </div>
+    ) : (
+      <div />
     );
   }
 }
