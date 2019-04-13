@@ -72,13 +72,16 @@ start = (gameId, userId) => {
 };
 
 playerTurnExecute = turn => {
-  let game = _.find(games, x => {
-    return x.id == turn.gameId;
-  });
+  let game = _.find(games, x => { return x.id == turn.gameId; });
   if (game == null) return;
 
   ruleService.apply(turn, game);
 };
+
+requestChallenge = turn =>{
+  let game = _.find(games, x => { return x.id == turn.gameId;});
+  if (game == null) return;
+}
 
 drawDeck = turn =>{
     let game = _.find(games, x => {
@@ -158,4 +161,4 @@ addFirstDiscardPile = game => {
   };
 };
 
-module.exports = { create, start, playerTurnExecute, drawDeck };
+module.exports = { create, start, playerTurnExecute, drawDeck, requestChallenge };

@@ -19,7 +19,7 @@ export class GamePlayers extends Component {
 
     if(game.currentTurn.card.color === card.color 
         || (game.currentTurn.card.color !== card.color && game.currentTurn.card.value === card.value)){
-          this.props.playerTurnExecute(playerNum, card, false);
+          this.props.playerTurnExecute(playerNum, card);
         }        
   };
 

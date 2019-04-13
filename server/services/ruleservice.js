@@ -24,11 +24,16 @@ apply = (turn, game) => {
   }
 };
 
+drawFourMatch = (turn, game) => {
+  if (turn.card.score != enumGame.CardValue.DrawFour) return;
+    
+};
+
 reverseMatch = (turn, game) => {
   if (turn.card.score != enumGame.CardValue.Reverse) return;
 
   if (
-    game.currentTurn.card.value == enumGame.CardValue.Reverse ||
+    game.currentTurn.card.score == enumGame.CardValue.Reverse ||
     turn.card.color == game.currentTurn.card.color
   ) {
 
@@ -47,7 +52,7 @@ skipMatch = (turn, game) => {
   if (turn.card.score != enumGame.CardValue.Skip) return;
 
   if (
-    game.currentTurn.card.value == enumGame.CardValue.Skip ||
+    game.currentTurn.card.score == enumGame.CardValue.Skip ||
     turn.card.color == game.currentTurn.card.color
   ) {
     removeCardValueAndColor(turn, game);
@@ -62,7 +67,7 @@ drawTwoMatch = (turn, game) => {
   if (turn.card.score != enumGame.CardValue.DrawTwo) return;
 
   if (
-    game.currentTurn.card.value == enumGame.CardValue.DrawTwo ||
+    game.currentTurn.card.score == enumGame.CardValue.DrawTwo ||
     turn.card.color == game.currentTurn.card.color
   ) {
 

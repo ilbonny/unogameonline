@@ -22,7 +22,7 @@ export class Game extends Component {
     showColorCube: false,
     currentCard: {},
     playerNum: 0,
-    showDisputeButtons: false,
+    showDisputeButtons: false
   };
 
   componentDidMount = () => {
@@ -48,14 +48,17 @@ export class Game extends Component {
     });
   };
 
-  diconnect = ()=>{
+  diconnect = () => {
     const { socket } = this.props;
     socket.on("DISCONNECT", socketId => {
-        console.log(socketId)
+      socket.emit("STARTING_GAME", {
+        gameId: this.state.gameId,
+        userId: this.state.userId
+      });
     });
-  }
+  };
 
-  playturn = ()=>{
+  playturn = () => {
     const { socket } = this.props;
     socket.on("PLAYTURN", () => {
       socket.emit("STARTING_GAME", {
@@ -63,45 +66,63 @@ export class Game extends Component {
         userId: this.state.userId
       });
     });
-  }
+  };
 
-  handleShowColorCube = (value, card, playerNum)=>{
-    this.setState({showColorCube : value, currentCard : card, playerNum : playerNum});
-  }
+  handleShowColorCube = (value, card, playerNum) => {
+    this.setState({
+      showColorCube: value,
+      currentCard: card,
+      playerNum: playerNum
+    });
+  };
 
-  selectColor = (color) => {
-      const {game, currentCard} = this.state;
-      this.setState({showColorCube : false});
+  selectColor = color => {
+    const { currentCard, playerNum } = this.state;
+    this.setState({ showColorCube: false });
+    currentCard.color = color;
 
-      currentCard.color = color;
-      if (currentCard.value === "DrawFour") {
-        game.message = "Do you want to challenge ?";
-        this.setState({game : game});
-        //this.showDisputeButtons = true;
-    } else
-        this.playerTurnExecute(this.playerNum, currentCard, false);
-  }
+    if(currentCard.value === "DrawFour"){
+      this.requestChallenge(playerNum, currentCard);
+    }      
+    else{
+      this.playerTurnExecute(playerNum, currentCard);
+    }    
+  };
 
-  playerTurnExecute = (playerNum, card, isChallenge) => {
-    const { socket} = this.props;
-    const {gameId, userId } = this.state;
+  playerTurnExecute = (playerNum, card) => {
+    const { socket } = this.props;
+    const { gameId, userId } = this.state;
 
     socket.emit("PLAYTURNING", {
       card: card,
       num: playerNum,
       gameId: gameId,
-      userId: userId,
-      isChallenge
+      userId: userId
+    });
+  };
+
+  requestChallenge = (playerNum, card) => {
+    const { socket } = this.props;
+    const { gameId, userId } = this.state;
+
+    socket.emit("REQUEST_CHALLENGE", {
+      card: card,
+      num: playerNum,
+      gameId: gameId,
+      userId: userId
     });
   };
 
   render() {
     const { socket } = this.props;
-    const {game, userId, gameId, showColorCube} = this.state;
+    const { game, gameId, showColorCube } = this.state;
     return (
       <div>
-        <GameDeck socket={socket} gameId={gameId}/>
-        <GameCube showColorCube={showColorCube} selectColor={this.selectColor} />
+        <GameDeck socket={socket} gameId={gameId} />
+        <GameCube
+          showColorCube={showColorCube}
+          selectColor={this.selectColor}
+        />
         <GameUnoButton />
         <GameMessages game={game} />
         {/* <GameDisputeButtons /> */}
@@ -111,9 +132,9 @@ export class Game extends Component {
             position="3"
             container="cardDivContainerVertical"
             cardStyle="cardVerticalLeft"
-            transform="left"            
-            handleShowColorCube = {this.handleShowColorCube}
-            playerTurnExecute = {this.playerTurnExecute}
+            transform="left"
+            handleShowColorCube={this.handleShowColorCube}
+            playerTurnExecute={this.playerTurnExecute}
           />
         </div>
         <div id="topdiv">
@@ -123,8 +144,8 @@ export class Game extends Component {
             container="cardDivContainerHorizontal"
             cardStyle="cardHorizontal"
             transform="top"
-            handleShowColorCube = {this.handleShowColorCube}
-            playerTurnExecute = {this.playerTurnExecute}
+            handleShowColorCube={this.handleShowColorCube}
+            playerTurnExecute={this.playerTurnExecute}
           />
         </div>
         <GameArrows game={game} />
@@ -136,8 +157,8 @@ export class Game extends Component {
             container="cardDivContainerVertical"
             cardStyle="cardVerticalRight"
             transform="right"
-            handleShowColorCube = {this.handleShowColorCube}            
-            playerTurnExecute = {this.playerTurnExecute}
+            handleShowColorCube={this.handleShowColorCube}
+            playerTurnExecute={this.playerTurnExecute}
           />
         </div>
         <div id="bottomdiv">
@@ -147,8 +168,8 @@ export class Game extends Component {
             container="cardDivContainerHorizontal"
             cardStyle="cardHorizontal"
             transform="bottom"
-            handleShowColorCube = {this.handleShowColorCube}
-            playerTurnExecute = {this.playerTurnExecute}
+            handleShowColorCube={this.handleShowColorCube}
+            playerTurnExecute={this.playerTurnExecute}
           />
         </div>
         <GameUser game={game} />

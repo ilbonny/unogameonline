@@ -1,5 +1,5 @@
 const utilsService = require('./utilsservice');
-
+const _ = require("lodash");
 const numPlayer = 4;
 let users = []
 
@@ -14,7 +14,13 @@ const getUsers = () =>{
 
 const getFourPlayers = ()=>{
     if(users.length < numPlayer) return [];
-    return users.slice(0,numPlayer);
+    let fourUsers = _.take(users,numPlayer);
+
+    fourUsers.forEach(user => {
+        _.remove(users, u => u.id === user.id)
+    });
+
+    return fourUsers;
 }
 
 module.exports = {addUser, getUsers, getFourPlayers}

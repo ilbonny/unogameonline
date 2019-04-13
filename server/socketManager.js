@@ -38,6 +38,13 @@ const connect = (io) =>{
             gameService.drawDeck(turn);
             io.emit("PLAYTURN");
         })
+
+        socket.on("REQUESTING_CHALLENGE", (turn)=>{
+            gameService.requestChallenge(turn);
+            io.emit("REQUEST_CHALLENGE");
+        })
+
+        
         
     });
 
