@@ -81,6 +81,8 @@ playerTurnExecute = turn => {
 requestChallenge = turn =>{
   let game = _.find(games, x => { return x.id == turn.gameId;});
   if (game == null) return;
+
+  ruleService.apply(turn, game);
 }
 
 drawDeck = turn =>{

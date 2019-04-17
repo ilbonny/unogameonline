@@ -109,7 +109,8 @@ export class Game extends Component {
       card: card,
       num: playerNum,
       gameId: gameId,
-      userId: userId
+      userId: userId,
+      isRequestChallenge : true
     });
   };
 

@@ -14,6 +14,7 @@ apply = (turn, game) => {
       drawTwoMatch(turn, game);
       break;
     case enumGame.CardValue.DrawFour:
+      drawFourMatch(turn, game);
       break;
     case enumGame.CardValue.Wild:
       wildMatch(turn, game);
@@ -26,7 +27,29 @@ apply = (turn, game) => {
 
 drawFourMatch = (turn, game) => {
   if (turn.card.score != enumGame.CardValue.DrawFour) return;
-    
+
+  if(turn.isRequestChallenge){
+    removeCardValue(turn, game);
+    removeToHandAndAddDiscard(turn, game);
+    setCurrentPlayer(game, 1);
+    game.message =`${messageService.messages.challengeRequest} ${game.currentPlayer.user.username}`;   
+    return;
+  }  
+
+  if(turn.isChallenge){
+    let exist = isExistColorCardPrevPlayer(game, turn.card.color);
+    if(exist){
+      var currentIndex = game.players.indexOf(game.currentPlayer);
+      addCardsToPlayer(game, 6, currentIndex);      
+      game.message =`${messageService.messages.drawFourFailed} ${turn.card.color} play ${game.currentPlayer.user.username}`;    
+    }else{        
+      addCardToPrevPlayer(game, 4);
+      game.message =`${messageService.messages.drawFourSuccess} ${turn.card.color} play ${game.currentPlayer.user.username}`; 
+    }
+  }else{
+    addCardToNextPlayer(game, 4);
+    game.message =`${messageService.messages.drawFour} ${turn.card.color} play ${game.currentPlayer.user.username}`;
+  }   
 };
 
 reverseMatch = (turn, game) => {
@@ -132,6 +155,13 @@ addCardToNextPlayer = (game, numCard) => {
   addCardsToPlayer(game, numCard, indexPlayer);
 };
 
+addCardToPrevPlayer = (game, numCard) => {
+  var currentIndex = game.players.indexOf(game.currentPlayer);
+  var indexPlayer =
+    currentIndex -1 < 0 ? game.players.length - 1 : currentIndex -1;
+  addCardsToPlayer(game, numCard, indexPlayer);
+};
+
 addCardsToPlayer = (game, numCard, indexPlayer) => {
   var player = game.players[indexPlayer];
   var cards = _.take(game.drawPile, numCard);
@@ -159,6 +189,13 @@ removeCardValueAndColor = (turn, game)=>{
       x.color == turn.card.color
     );
   });
+}
+
+isExistColorCardPrevPlayer = (game, color) =>{
+  var currentIndex = game.players.indexOf(game.currentPlayer);
+  var indexPlayer = currentIndex -1 < 0 ? game.players.length - 1 : currentIndex - 1;
+  var prevPlayer = game.players[indexPlayer];
+   return _.find(prevPlayer.hand, (card)=> {return card.color === color });
 }
 
 module.exports = { apply,setCurrentPlayer };
