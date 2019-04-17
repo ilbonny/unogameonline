@@ -2,26 +2,30 @@ import React, { Component } from "react";
 import "../resources/main.css";
 
 export class GameDisputeButtons extends Component {
-  challengeDrawFour = choice => {};
+  challengeDrawFour = e => {
+    this.props.challengeDrawFour(e.target.id)
+  };
 
   render() {
-    return (
-      <div id="disputeButtons">
+    const { isRequestChallenge } = this.props;
+    return isRequestChallenge ? (
+       <div id="disputeButtons">
         <button
+          id="yes"
           type="button"
           className="btn btn-outline-primary"
-          onClick={this.challengeDrawFour(true)}
-        >
+          onClick={this.challengeDrawFour}>
           Yes
         </button>
         <button
+          id='no'
           type="button"
           className="btn btn-outline-secondary"
-          onClick={this.challengeDrawFour(false)}
-        >
+          onClick={this.challengeDrawFour}>
           No
         </button>
-      </div>
+      </div>) : (
+      <div />
     );
   }
 }

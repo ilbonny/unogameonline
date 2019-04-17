@@ -32,7 +32,7 @@ drawFourMatch = (turn, game) => {
     removeCardValue(turn, game);
     removeToHandAndAddDiscard(turn, game);
     setCurrentPlayer(game, 1);
-    game.message =`${messageService.messages.challengeRequest} ${game.currentPlayer.user.username}`;   
+    game.message =`${messageService.messages.challengeRequest}`;   
     return;
   }  
 
@@ -41,6 +41,7 @@ drawFourMatch = (turn, game) => {
     if(exist){
       var currentIndex = game.players.indexOf(game.currentPlayer);
       addCardsToPlayer(game, 6, currentIndex);      
+      setCurrentPlayer(game, 1);
       game.message =`${messageService.messages.drawFourFailed} ${turn.card.color} play ${game.currentPlayer.user.username}`;    
     }else{        
       addCardToPrevPlayer(game, 4);

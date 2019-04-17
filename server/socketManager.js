@@ -40,11 +40,14 @@ const connect = (io) =>{
         })
 
         socket.on("REQUESTING_CHALLENGE", (turn)=>{
-            gameService.requestChallenge(turn);
+            gameService.playerTurnExecute(turn);
             io.emit("REQUEST_CHALLENGE");
-        })
-
+        })  
         
+        socket.on("CHALLENGE", (turn)=>{
+            gameService.playerTurnExecute(turn);
+            io.emit("PLAYTURN");
+        })
         
     });
 

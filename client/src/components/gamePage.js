@@ -20,9 +20,9 @@ export class Game extends Component {
     userId: "",
     countDiscard: 1,
     showColorCube: false,
+    showDisputeButtons: false,
     currentCard: {},
-    playerNum: 0,
-    showDisputeButtons: false
+    playerNum: 0    
   };
 
   componentDidMount = () => {
@@ -30,6 +30,7 @@ export class Game extends Component {
     this.startGame();
     this.diconnect();
     this.playturn();
+    this.challenge();
 
     var params = queryString.parse(this.props.location.search);
     this.setState({ gameId: params.game, userId: params.player });
@@ -48,23 +49,33 @@ export class Game extends Component {
     });
   };
 
+  startingGame = ()=>{
+    const { socket } = this.props;
+    socket.emit("STARTING_GAME", {
+      gameId: this.state.gameId,
+      userId: this.state.userId
+    });
+  }
+
   diconnect = () => {
     const { socket } = this.props;
     socket.on("DISCONNECT", socketId => {
-      socket.emit("STARTING_GAME", {
-        gameId: this.state.gameId,
-        userId: this.state.userId
-      });
+      this.startingGame();
     });
   };
 
   playturn = () => {
     const { socket } = this.props;
     socket.on("PLAYTURN", () => {
-      socket.emit("STARTING_GAME", {
-        gameId: this.state.gameId,
-        userId: this.state.userId
-      });
+      this.startingGame();
+    });
+  };
+
+  challenge = () => {
+    const { socket } = this.props;
+    socket.on("REQUEST_CHALLENGE", () => {
+      this.startingGame();
+      this.setState({showDisputeButtons : true});
     });
   };
 
@@ -104,8 +115,8 @@ export class Game extends Component {
   requestChallenge = (playerNum, card) => {
     const { socket } = this.props;
     const { gameId, userId } = this.state;
-
-    socket.emit("REQUEST_CHALLENGE", {
+    
+    socket.emit("REQUESTING_CHALLENGE", {
       card: card,
       num: playerNum,
       gameId: gameId,
@@ -114,9 +125,25 @@ export class Game extends Component {
     });
   };
 
+  challengeDrawFour = (choice)=>{
+    const { socket } = this.props;
+    const { game, gameId, userId } = this.state;
+
+    let isChallenge = choice === 'yes' ? true : false;
+    this.setState({showDisputeButtons : false});
+
+    socket.emit("CHALLENGE", {
+      card : game.discardPile[game.discardPile.length-1],
+      gameId: gameId,
+      userId: userId,
+      isRequestChallenge : false,
+      isChallenge : isChallenge
+    });
+  }
+
   render() {
     const { socket } = this.props;
-    const { game, gameId, showColorCube } = this.state;
+    const { game, gameId, showColorCube, showDisputeButtons } = this.state;
     return (
       <div>
         <GameDeck socket={socket} gameId={gameId} />
@@ -126,7 +153,7 @@ export class Game extends Component {
         />
         <GameUnoButton />
         <GameMessages game={game} />
-        {/* <GameDisputeButtons /> */}
+        <GameDisputeButtons isRequestChallenge = {showDisputeButtons} challengeDrawFour={this.challengeDrawFour} /> 
         <div id="leftdiv">
           <GamePlayers
             game={game}

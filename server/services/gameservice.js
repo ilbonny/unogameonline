@@ -78,13 +78,6 @@ playerTurnExecute = turn => {
   ruleService.apply(turn, game);
 };
 
-requestChallenge = turn =>{
-  let game = _.find(games, x => { return x.id == turn.gameId;});
-  if (game == null) return;
-
-  ruleService.apply(turn, game);
-}
-
 drawDeck = turn =>{
     let game = _.find(games, x => {
         return x.id == turn.gameId;
@@ -105,6 +98,7 @@ drawDeck = turn =>{
 
     ruleService.setCurrentPlayer(game,1);
     game.message =`${messageService.messages.drawDeck} ${game.currentPlayer.user.username}`;
+    return game;
 }
 
 addPlayerWithCoverCards = playerIndex => {
@@ -163,4 +157,4 @@ addFirstDiscardPile = game => {
   };
 };
 
-module.exports = { create, start, playerTurnExecute, drawDeck, requestChallenge };
+module.exports = { create, start, playerTurnExecute, drawDeck };
